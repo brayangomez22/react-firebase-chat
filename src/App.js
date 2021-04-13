@@ -69,7 +69,7 @@ function SignOut() {
 function ChatRoom() {
 	const dummy = useRef()
 	const messagesRef = firestore.collection('messages')
-	const query = messagesRef.orderBy('createdAt').limit(25)
+	const query = messagesRef.orderBy('createdAt').limit(100)
 
 	const [messages] = useCollectionData(query, { idField: 'id' })
 
@@ -78,13 +78,14 @@ function ChatRoom() {
 	const sendMessage = async (e) => {
 		e.preventDefault()
 
-		const { uid, photoURL } = auth.currentUser
+		const { uid, photoURL, displayName } = auth.currentUser
 
 		await messagesRef.add({
 			text: formValue,
 			createdAt: firebase.firestore.FieldValue.serverTimestamp(),
 			uid,
 			photoURL,
+			displayName,
 		})
 
 		setFormValue('')
@@ -115,7 +116,9 @@ function ChatRoom() {
 }
 
 function ChatMessage(props) {
-	const { text, uid, photoURL } = props.message
+	const { text, uid, photoURL, displayName } = props.message
+
+	console.log(props.displayName)
 
 	const messageClass = uid === auth.currentUser.uid ? 'sent' : 'received'
 
@@ -123,7 +126,9 @@ function ChatMessage(props) {
 		<>
 			<div className={`message ${messageClass}`}>
 				<img src={photoURL || 'https://api.adorable.io/avatars/23/abott@adorable.png'} />
-				<p>{text}</p>
+				<p>
+					{displayName} <br /> {text}
+				</p>
 			</div>
 		</>
 	)
