@@ -203,6 +203,7 @@ img {
 
 @media (max-width: 692px) {
 	.titleWelcome h2 {
+		line-height: 1.45;
 		font-size: 80px;
 	}
 }
